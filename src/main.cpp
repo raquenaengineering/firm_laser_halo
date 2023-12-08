@@ -18,11 +18,13 @@
 
 #define LED_PIN 4
 
-#define LASERS_A_PIN 13
+#define LASERS_A_PIN 4
 #define LASERS_B_PIN 16
 #define LASERS_C_PIN 17
 #define LASERS_D_PIN 5
 #define LASERS_E_PIN 18
+#define LASERS_F_PIN 23
+
 
 
 // global variables //
@@ -75,6 +77,9 @@ void setup() {
   pinMode(LASERS_E_PIN, OUTPUT);
   digitalWrite(LASERS_E_PIN, LOW);
 
+  pinMode(LASERS_F_PIN, OUTPUT);
+  digitalWrite(LASERS_F_PIN, LOW);
+
   // serial port //
   Serial.begin(115200);
 
@@ -95,7 +100,7 @@ void loop() {
 
 void updateSpeed(void) {
 
-  static unsigned long dt = 500;          // period for this task
+  static unsigned long dt = 200;          // period for this task
   static unsigned long t0 = millis();
   unsigned long t = millis();
 
@@ -111,8 +116,14 @@ void updateSpeed(void) {
 }
 
 void triggerLasers(void){
-  // lasersOnOffMode();
-  lasersBlinkLaderMode();
+
+  if(potVal > 4000){
+    allLasersOff();
+  }
+  else{
+    // lasersOnOffMode();
+    lasersBlinkLaderMode();
+  }
 
 }
 
@@ -140,32 +151,33 @@ void  lasersBlinkLaderMode(void){
   if(t-t0 >= dt){
 
     if(stateFlag == 0){
+      allLasersOff();
       digitalWrite(LASERS_A_PIN, HIGH);
-      digitalWrite(LASERS_A_PIN, LOW);
-      digitalWrite(LASERS_A_PIN, LOW);
-      digitalWrite(LASERS_A_PIN, LOW);
+
     }
     if(stateFlag == 1){
-      digitalWrite(LASERS_A_PIN, LOW);
-      digitalWrite(LASERS_A_PIN, HIGH);
-      digitalWrite(LASERS_A_PIN, LOW);
-      digitalWrite(LASERS_A_PIN, LOW);
+      allLasersOff();
+      digitalWrite(LASERS_B_PIN, HIGH);
     }
     if(stateFlag == 2){
-      digitalWrite(LASERS_A_PIN, LOW);
-      digitalWrite(LASERS_A_PIN, LOW);
-      digitalWrite(LASERS_A_PIN, HIGH);
-      digitalWrite(LASERS_A_PIN, LOW);
+      allLasersOff();
+      digitalWrite(LASERS_C_PIN, HIGH);
     }
     if(stateFlag == 3){
-      digitalWrite(LASERS_A_PIN, LOW);
-      digitalWrite(LASERS_A_PIN, LOW);
-      digitalWrite(LASERS_A_PIN, LOW);
-      digitalWrite(LASERS_A_PIN, HIGH);
+      allLasersOff();
+      digitalWrite(LASERS_D_PIN, HIGH);
+    }
+    if(stateFlag == 4){
+      allLasersOff();
+      digitalWrite(LASERS_E_PIN, HIGH);
+    }
+    if(stateFlag == 5){
+      allLasersOff();
+      digitalWrite(LASERS_F_PIN, HIGH);
     }
     Serial.println(stateFlag);
     stateFlag = stateFlag + 1;
-    stateFlag = stateFlag % 4;
+    stateFlag = stateFlag % 6;
 
     t0 = t;
 
@@ -181,5 +193,11 @@ void allLasersOn(void){
 }
 void allLasersOff(void){
   digitalWrite(LED_PIN,LOW);
+  digitalWrite(LASERS_A_PIN, LOW);
+  digitalWrite(LASERS_B_PIN, LOW);
+  digitalWrite(LASERS_C_PIN, LOW);
+  digitalWrite(LASERS_D_PIN, LOW);
+  digitalWrite(LASERS_E_PIN, LOW);
+  digitalWrite(LASERS_F_PIN, LOW);
 
 }
